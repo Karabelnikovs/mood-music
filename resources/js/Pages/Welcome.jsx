@@ -61,9 +61,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     className="absolute -left-20 top-0 max-w-[877px]"
                                     src="https://laravel.com/assets/img/welcome/background.svg"
                                 />
-                                <a href={route("face.analysis.index")}>
-                                    face analyze
-                                </a>
                             </nav>
                         </header>
 
