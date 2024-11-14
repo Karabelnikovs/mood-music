@@ -13,6 +13,7 @@ function Home() {
 
     return (
         <div className="bg-black h-screen">
+            <Head title="Home" />
             <Link
                 href={route("logout")}
                 method="post"
