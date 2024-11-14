@@ -1,18 +1,20 @@
 export default function InputLabel({
     value,
-    className = '',
+    className = "",
     children,
     ...props
 }) {
     return (
-        <label
-            {...props}
-            className={
-                `block text-sm font-medium text-gray-700 ` +
-                className
-            }
-        >
-            {value ? value : children}
-        </label>
+        <div className="flex justify-between">
+            <label
+                className={
+                    `text-xs font-medium text-muted-foreground group-focus-within:text-white text-gray-400` +
+                    className
+                }
+            >
+                {/* {...props} */}
+                {value ? value : children}
+            </label>
+        </div>
     );
 }

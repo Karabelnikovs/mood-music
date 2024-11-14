@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
 function Home() {
@@ -12,6 +13,22 @@ function Home() {
 
     return (
         <div className="bg-black h-screen">
+            <Link
+                href={route("logout")}
+                method="post"
+                as="button"
+                className="absolute top-4 left-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2"
+            >
+                Logout
+            </Link>
+            <a
+                href={route("profile.edit")}
+                method="post"
+                as="button"
+                className="absolute top-16 left-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2"
+            >
+                Profile
+            </a>
             <div className="h-full flex flex-col items-center justify-center">
                 <h1>Create a Playlist Based on Your Emotion</h1>
                 <form

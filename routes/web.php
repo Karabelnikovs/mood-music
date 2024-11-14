@@ -27,11 +27,12 @@ Route::get('/dashboard', function () {
 // })->middleware(['auth', 'verified'])->name('emotions');
 // Route::post('/emotion/analyze', [EmotionController::class, 'analyzeEmotion'])->name('profile.update');
 
-Route::get('/', [SpotifyController::class, 'index']);
-Route::post('/generate-playlist', [SpotifyController::class, 'generatePlaylist']);
-Route::get('/playlist', [SpotifyController::class, 'showPlaylist'])->name('playlist');
+
 
 Route::middleware('auth')->group(function () {
+    Route::get('/', [SpotifyController::class, 'index']);
+    Route::post('/generate-playlist', [SpotifyController::class, 'generatePlaylist']);
+    Route::get('/playlist', [SpotifyController::class, 'showPlaylist'])->name('playlist');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
