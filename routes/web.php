@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/playlists/create', [SpotifyController::class, 'storePlaylist']);
     Route::get('/playlists', [SpotifyController::class, 'indexPlaylists'])->name('playlists.index');
+    Route::delete('/playlist/{id}', [SpotifyController::class, 'destroyPlaylist'])->name('playlist.destroy');
+
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

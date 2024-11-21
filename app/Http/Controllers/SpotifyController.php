@@ -107,7 +107,9 @@ class SpotifyController extends Controller
             return back()->withErrors(['message' => 'No tracks selected.']);
         }
 
-        $playlist = Playlist::create(['name' => 'My Playlist']);
+        $playlist = Playlist::create([
+            'name' => $request->name,
+        ]);
 
         $tracks = session('playlist', []);
         foreach ($tracks as $track) {
@@ -128,9 +130,18 @@ class SpotifyController extends Controller
 
     public function indexPlaylists()
     {
-        $playlists = Playlist::with('songs')->get();
-        return Inertia::render('Playlists', ['playlists' => $playlists]);
+        $playlists = Playlist::with('topSongs')->get();
+        $fullPlaylists = Playlist::with('songs')->get();
+        // dd($playlists);
+        return Inertia::render('Playlists', ['playlists' => $playlists, 'fullPlaylists' => $fullPlaylists]);
     }
 
+    public function destroyPlaylist($id)
+    {
+        $playlist = Playlist::findOrFail($id);
+        $playlist->delete();
+
+        return redirect()->back()->with('message', 'Playlist deleted successfully!');
+    }
 }
 

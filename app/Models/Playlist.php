@@ -23,4 +23,8 @@ class Playlist extends Model
     {
         return $this->hasMany(Song::class);
     }
+    public function topSongs()
+    {
+        return $this->hasMany(Song::class)->take(3);
+    }
 }

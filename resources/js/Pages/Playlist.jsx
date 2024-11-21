@@ -3,6 +3,8 @@ import { Inertia } from "@inertiajs/inertia";
 
 const Playlist = ({ playlist }) => {
     const [selectedTracks, setSelectedTracks] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [playlistName, setPlaylistName] = useState("");
 
     const handleCheckboxChange = (trackId) => {
         setSelectedTracks((prev) =>
@@ -13,11 +15,24 @@ const Playlist = ({ playlist }) => {
     };
 
     const handleCreatePlaylist = () => {
-        Inertia.post("/playlists/create", { tracks: selectedTracks });
+        // Open the modal for playlist name input
+        setShowModal(true);
     };
+
+    const confirmCreatePlaylist = () => {
+        // Send data to the server
+        Inertia.post("/playlists/create", {
+            tracks: selectedTracks,
+            name: playlistName,
+        });
+        setShowModal(false);
+        setPlaylistName("");
+    };
+
     const sortedPlaylist = [...playlist].sort((a, b) => {
         return b.preview_url ? 1 : -1;
     });
+
     return (
         <div className="bg-black min-h-screen flex flex-col items-center justify-center text-white p-4 relative">
             <a
@@ -95,13 +110,46 @@ const Playlist = ({ playlist }) => {
                 </p>
             )}
 
-            {playlist.length > 0 && (
+            {playlist.length > 0 && selectedTracks.length > 0 && (
                 <button
                     onClick={handleCreatePlaylist}
                     className="mt-6 px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg"
                 >
                     Create Playlist
                 </button>
+            )}
+
+            {/* Playlist Name Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-gray-800 text-white p-6 rounded-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4">
+                            Enter Playlist Name
+                        </h2>
+                        <input
+                            type="text"
+                            value={playlistName}
+                            onChange={(e) => setPlaylistName(e.target.value)}
+                            placeholder="Playlist name"
+                            className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-teal-500 mb-4"
+                        />
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmCreatePlaylist}
+                                className="px-4 py-2 bg-teal-500 hover:bg-teal-600 rounded-md"
+                                disabled={!playlistName.trim()}
+                            >
+                                Create
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
