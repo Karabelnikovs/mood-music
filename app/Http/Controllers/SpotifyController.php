@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use SpotifyWebAPI\SpotifyWebAPI;
 use SpotifyWebAPI\Session;
+use App\Models\Playlist;
+use App\Models\Song;
 
 class SpotifyController extends Controller
 {
@@ -96,5 +98,39 @@ class SpotifyController extends Controller
     {
         return Inertia::render('Home');
     }
+
+    public function storePlaylist(Request $request)
+    {
+        $trackIds = $request->input('tracks', []);
+
+        if (empty($trackIds)) {
+            return back()->withErrors(['message' => 'No tracks selected.']);
+        }
+
+        $playlist = Playlist::create(['name' => 'My Playlist']);
+
+        $tracks = session('playlist', []);
+        foreach ($tracks as $track) {
+            if (in_array($track->id, $trackIds)) {
+                Song::create([
+                    'playlist_id' => $playlist->id,
+                    'spotify_id' => $track->id,
+                    'name' => $track->name,
+                    'artist' => $track->artists[0]->name,
+                    'album_cover_url' => $track->album->images[0]->url ?? null,
+                    'preview_url' => $track->preview_url ?? null,
+                ]);
+            }
+        }
+
+        return redirect()->route('playlists.index')->with('success', 'Playlist created successfully!');
+    }
+
+    public function indexPlaylists()
+    {
+        $playlists = Playlist::with('songs')->get();
+        return Inertia::render('Playlists', ['playlists' => $playlists]);
+    }
+
 }
 
