@@ -1,0 +1,36 @@
+/* resources/css/Playlist.css */
+.playlist-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.playlist {
+    list-style: none;
+    padding: 0;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.album-cover {
+    width: 64px;
+    height: 64px;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.track-info {
+    display: flex;
+    flex-direction: column;
+}
+
+audio {
+    margin-top: 5px;
+}
