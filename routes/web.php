@@ -18,9 +18,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Route::get('/emotions', function () {
 //     return Inertia::render('EmotionCapture');
@@ -30,7 +30,8 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [SpotifyController::class, 'index']);
+    Route::get('/', [SpotifyController::class, 'index'])->name('index');
+
     Route::post('/generate-playlist', [SpotifyController::class, 'generatePlaylist']);
     Route::get('/playlist', [SpotifyController::class, 'showPlaylist'])->name('playlist');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

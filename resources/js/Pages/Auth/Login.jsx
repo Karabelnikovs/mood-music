@@ -105,6 +105,12 @@ export default function Login({ status, canResetPassword }) {
                             Log in
                         </PrimaryButton>
                     </div>
+                    <Link
+                        href={route("register")}
+                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Register?
+                    </Link>
                 </form>
                 <img
                     className="absolute bottom-0 right-0 h-6"

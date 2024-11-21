@@ -10,7 +10,7 @@ use SpotifyWebAPI\Session;
 
 class SpotifyController extends Controller
 {
-    private $spotifyApi;  
+    private $spotifyApi;
     private $session;
 
     public function __construct()
@@ -40,13 +40,12 @@ class SpotifyController extends Controller
         $emotion = $request->input('emotion');
         $genre = $request->input('genre');
 
-        // Map common genres to Spotify-supported seed genres
         $genreMapping = [
             'pop' => 'pop',
             'jazz' => 'jazz',
             'rock' => 'rock',
             'classical' => 'classical',
-            'rap' => 'hip-hop', // Map "rap" to "hip-hop"
+            'rap' => 'hip-hop',
         ];
 
         // Check if the genre exists in our mapping; otherwise, default to "pop"
