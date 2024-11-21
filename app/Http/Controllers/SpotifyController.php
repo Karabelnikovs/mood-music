@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,7 +10,7 @@ use SpotifyWebAPI\Session;
 
 class SpotifyController extends Controller
 {
-    private $spotifyApi;
+    private $spotifyApi;  
     private $session;
 
     public function __construct()
@@ -39,11 +40,51 @@ class SpotifyController extends Controller
         $emotion = $request->input('emotion');
         $genre = $request->input('genre');
 
-        $playlists = $this->spotifyApi->search("genre:$genre mood:$emotion", 'playlist', ['limit' => 10]);
+        // Map common genres to Spotify-supported seed genres
+        $genreMapping = [
+            'pop' => 'pop',
+            'jazz' => 'jazz',
+            'rock' => 'rock',
+            'classical' => 'classical',
+            'rap' => 'hip-hop', // Map "rap" to "hip-hop"
+        ];
 
-        session(['playlist' => $playlists->playlists->items]);
-        // dd($playlists->playlists->items);
+        // Check if the genre exists in our mapping; otherwise, default to "pop"
+        $spotifyGenre = $genreMapping[$genre] ?? 'pop';
+
+        // Map emotions to Spotify audio features
+        $audioFeatures = $this->mapEmotionToFeatures($emotion);
+
+        // Generate recommendations based on genre, mood, and audio features
+        $recommendations = $this->spotifyApi->getRecommendations([
+            'seed_genres' => [$spotifyGenre],
+            'target_energy' => $audioFeatures['energy'],
+            'target_valence' => $audioFeatures['valence'],
+            'target_danceability' => $audioFeatures['danceability'],
+            'limit' => 10,
+        ]);
+
+        $tracks = $recommendations->tracks;
+
+        // Shuffle the playlist to ensure randomness
+        shuffle($tracks);
+
+        // Store playlist in session
+        session(['playlist' => $tracks]);
         return redirect()->route('playlist');
+    }
+
+    private function mapEmotionToFeatures($emotion)
+    {
+        // Define audio features based on mood/emotion
+        $features = [
+            'happy' => ['energy' => 0.8, 'valence' => 0.9, 'danceability' => 0.7],
+            'relaxed' => ['energy' => 0.3, 'valence' => 0.6, 'danceability' => 0.4],
+            'energetic' => ['energy' => 0.9, 'valence' => 0.8, 'danceability' => 0.8],
+            'sad' => ['energy' => 0.2, 'valence' => 0.3, 'danceability' => 0.2],
+        ];
+
+        return $features[$emotion] ?? ['energy' => 0.5, 'valence' => 0.5, 'danceability' => 0.5];
     }
 
     public function showPlaylist()
@@ -52,27 +93,9 @@ class SpotifyController extends Controller
         return Inertia::render('Playlist', ['playlist' => $playlist]);
     }
 
-
     public function index()
     {
         return Inertia::render('Home');
     }
-
-    // public function generatePlaylist(Request $request)
-    // {
-    //     $emotion = $request->input('emotion');
-    //     $genre = $request->input('genre');
-
-    //     $playlistData = $this->createPlaylistByEmotionAndGenre($emotion, $genre);
-    //     return Inertia::render('Playlist', ['playlist' => $playlistData]);
-    // }
-
-    private function createPlaylistByEmotionAndGenre($emotion, $genre)
-    {
-        // Map emotions to mood keywords or Spotify track attributes (e.g., danceability, energy)
-        $tracks = $this->spotifyApi->search("genre:$genre mood:$emotion", 'track', ['limit' => 20]);
-
-        // Additional logic to create a playlist or retrieve existing ones
-        return $tracks->tracks->items;
-    }
 }
+

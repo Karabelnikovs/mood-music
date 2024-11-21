@@ -1,80 +1,78 @@
 import React, { useState } from "react";
-import { Head, Link, useForm } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
-function Home() {
-    const [emotion, setEmotion] = useState("");
-    const [genre, setGenre] = useState("");
+const Home = () => {
+    const [emotion, setEmotion] = useState("happy");
+    const [genre, setGenre] = useState("pop");
 
-    const handleGeneratePlaylist = (e) => {
-        e.preventDefault();
+    const generatePlaylist = (event) => {
+        event.preventDefault();
+        // Update the route URL here
         Inertia.post("/generate-playlist", { emotion, genre });
     };
 
     return (
-        <div className="bg-black h-screen">
-            <Link
-                href={route("logout")}
-                method="post"
-                as="button"
-                className="absolute top-4 left-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2"
+        <div className="bg-black h-screen flex flex-col items-center justify-center text-white p-4 relative">
+            {/* Logout Button */}
+            <button
+                onClick={() => Inertia.post(route("logout"))}
+                className="absolute top-4 left-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-white text-black h-10 px-4 py-2"
             >
                 Logout
-            </Link>
-            <a
-                href={route("profile.edit")}
-                method="post"
-                as="button"
-                className="absolute top-16 left-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2"
+            </button>
+            
+            {/* Profile Button */}
+            <button
+                onClick={() => Inertia.visit(route("profile.edit"))}
+                className="absolute top-16 left-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-white text-black h-10 px-4 py-2"
             >
                 Profile
-            </a>
-            <div className="h-full flex flex-col items-center justify-center">
-                <h1>Create a Playlist Based on Your Emotion</h1>
-                <form
-                    onSubmit={handleGeneratePlaylist}
-                    className="h-full flex flex-col items-center justify-center text-white/50 gap-4 w-full"
-                >
-                    <div className="group relative rounded-lg border focus-within:border-sky-200 px-3 pb-1.5 pt-2.5 duration-200 focus-within:ring focus-within:ring-sky-300/30 min-w-64">
-                        <div className="flex justify-between">
-                            <label className="text-xs font-medium text-muted-foreground group-focus-within:text-white text-gray-400">
-                                Emotion
-                            </label>
-                        </div>
-                        <input
-                            className="text-white block w-full border-0 bg-transparent p-0 text-sm file:my-1 placeholder:text-muted-foreground/90 focus:outline-none focus:ring-0 focus:ring-teal-500 sm:leading-7 text-foreground"
-                            type="text"
-                            placeholder="Emotion"
-                            value={emotion}
-                            onChange={(e) => setEmotion(e.target.value)}
-                        />
-                    </div>
+            </button>
 
-                    <div className="group relative rounded-lg border focus-within:border-sky-200 px-3 pb-1.5 pt-2.5 duration-200 focus-within:ring focus-within:ring-sky-300/30 min-w-64">
-                        <div className="flex justify-between">
-                            <label className="text-xs font-medium text-muted-foreground group-focus-within:text-white text-gray-400">
-                                Genre
-                            </label>
-                        </div>
-                        <input
-                            className="text-white block w-full border-0 bg-transparent p-0 text-sm file:my-1 placeholder:text-muted-foreground/90 focus:outline-none focus:ring-0 focus:ring-teal-500 sm:leading-7 text-foreground"
-                            type="text"
-                            placeholder="Genre"
-                            value={genre}
-                            onChange={(e) => setGenre(e.target.value)}
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2"
+            <h1 className="text-3xl font-bold mb-8 text-center">Generate a Playlist</h1>
+            <form onSubmit={generatePlaylist} className="w-full max-w-md flex flex-col gap-6">
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="emotion" className="text-sm font-semibold text-gray-300">Select Mood:</label>
+                    <select
+                        id="emotion"
+                        value={emotion}
+                        onChange={(e) => setEmotion(e.target.value)}
+                        required
+                        className="bg-gray-800 text-white p-2 rounded-md focus:ring-2 focus:ring-teal-500"
                     >
-                        Generate Playlist
-                    </button>
-                </form>
-            </div>
+                        <option value="happy">Happy</option>
+                        <option value="relaxed">Relaxed</option>
+                        <option value="energetic">Energetic</option>
+                        <option value="sad">Sad</option>
+                    </select>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="genre" className="text-sm font-semibold text-gray-300">Select Genre:</label>
+                    <select
+                        id="genre"
+                        value={genre}
+                        onChange={(e) => setGenre(e.target.value)}
+                        required
+                        className="bg-gray-800 text-white p-2 rounded-md focus:ring-2 focus:ring-teal-500"
+                    >
+                        <option value="pop">Pop</option>
+                        <option value="jazz">Jazz</option>
+                        <option value="rock">Rock</option>
+                        <option value="classical">Classical</option>
+                        <option value="rap">Rap</option>
+                    </select>
+                </div>
+
+                <button
+                    type="submit"
+                    className="mt-4 font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 bg-white text-black h-10 px-4 py-2"
+                >
+                    Generate Playlist
+                </button>
+            </form>
         </div>
     );
-}
+};
 
 export default Home;
