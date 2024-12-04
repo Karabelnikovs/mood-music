@@ -170,14 +170,14 @@ class SpotifyController extends Controller
 
         $tracks = session('playlist', []);
         foreach ($tracks as $track) {
-            if (in_array($track->id, $trackIds)) {
+            if (in_array($track['id'], $trackIds)) {
                 Song::create([
                     'playlist_id' => $playlist->id,
-                    'spotify_id' => $track->id,
-                    'name' => $track->name,
-                    'artist' => $track->artists[0]->name,
-                    'album_cover_url' => $track->album->images[0]->url ?? null,
-                    'preview_url' => $track->preview_url ?? null,
+                    'spotify_id' => $track['id'],
+                    'name' => $track['name'],
+                    'artist' => $track['artist'],
+                    'album_cover_url' => $track['album']['images'][0]['url'] ?? null,
+                    'preview_url' => $track['preview_url'] ?? null,
                 ]);
             }
         }

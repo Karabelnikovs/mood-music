@@ -55,10 +55,10 @@ const Playlist = ({ playlist }) => {
                         >
                             <img
                                 src={
-                                    track.album.images?.url ||
+                                    track.album_cover_url ||
                                     "/default-album-cover.jpg"
                                 }
-                                alt="Album cover"
+                                alt={track.name}
                                 className="w-20 h-20 rounded-md object-cover mr-4"
                             />
                             <div className="flex-1">
