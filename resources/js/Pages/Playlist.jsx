@@ -15,12 +15,10 @@ const Playlist = ({ playlist }) => {
     };
 
     const handleCreatePlaylist = () => {
-        // Open the modal for playlist name input
         setShowModal(true);
     };
 
     const confirmCreatePlaylist = () => {
-        // Send data to the server
         Inertia.post("/playlists/create", {
             tracks: selectedTracks,
             name: playlistName,
@@ -55,7 +53,7 @@ const Playlist = ({ playlist }) => {
                         >
                             <img
                                 src={
-                                    track.album.images?.url ||
+                                    track.album?.images?.[0]?.url ||
                                     "/default-album-cover.jpg"
                                 }
                                 alt="Album cover"
@@ -65,10 +63,13 @@ const Playlist = ({ playlist }) => {
                                 <h3 className="text-lg font-semibold text-teal-400">
                                     {track.name}
                                 </h3>
+
+                                {/* Display the artist's name */}
                                 <p className="text-gray-400">
-                                    Artist: {track.artists?.name || "Unknown"}
+                                    Artist: {track.artists?.[0]?.name || "Unknown"}
                                 </p>
 
+                                {/* Check if preview URL exists */}
                                 {track.preview_url ? (
                                     <audio
                                         src={track.preview_url}
