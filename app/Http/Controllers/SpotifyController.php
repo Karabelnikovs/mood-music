@@ -114,17 +114,19 @@ class SpotifyController extends Controller
 
         $formattedTracks = collect($tracks)->map(function ($track) {
             return [
-                'id' => $track['id'], // Track ID
-                'name' => $track['name'], // Track Name
-                'artist' => $track['artists'][0]['name'] ?? 'Unknown', // Artist Name
-                'url' => $track['external_urls']['spotify'] ?? '', // Spotify URL
-                'preview_url' => $track['preview_url'] ?? null, // Preview URL
+                'id' => $track['id'],
+                'name' => $track['name'],
+                'artist' => $track['artists'][0]['name'], // Ensure this exists
+                'url' => $track['external_urls']['spotify'],
+                'preview_url' => $track['preview_url'],
+                'album_cover_url' => $track['album']['images'][0]['url'] ?? null, // Make it explicit
                 'album' => [
-                    'name' => $track['album']['name'] ?? 'Unknown', // Album Name
-                    'images' => $track['album']['images'] ?? [], // Album Cover Images
+                    'name' => $track['album']['name'] ?? 'Unknown',
+                    'images' => $track['album']['images'] ?? [],
                 ],
             ];
         })->toArray();
+
 
         session(['playlist' => $formattedTracks]);
         // dd($formattedTracks);

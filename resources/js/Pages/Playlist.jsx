@@ -61,12 +61,13 @@ const Playlist = ({ playlist }) => {
                                 alt={track.name}
                                 className="w-20 h-20 rounded-md object-cover mr-4"
                             />
+
                             <div className="flex-1">
                                 <h3 className="text-lg font-semibold text-teal-400">
                                     {track.name}
                                 </h3>
                                 <p className="text-gray-400">
-                                    Artist: {track.artists?.name || "Unknown"}
+                                    Artist: {track.artist || "Unknown"}
                                 </p>
 
                                 {track.preview_url ? (
