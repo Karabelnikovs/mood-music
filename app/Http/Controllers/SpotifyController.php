@@ -126,11 +126,7 @@ class SpotifyController extends Controller
         return redirect()->route('playlists.index')->with('success', 'Playlist created successfully!');
     }
 
-    // public function indexPlaylists()
-    // {
-    //     $playlists = Playlist::with('songs')->where('id', Auth::user()->id)->get();
-    //     return Inertia::render('Playlists', ['playlists' => $playlists]);
-    // }
+
     public function indexPlaylists()
     {
         $playlists = Playlist::with('topSongs')->where('id', Auth::user()->id)->get();

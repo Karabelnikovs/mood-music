@@ -12,8 +12,12 @@ return new class extends Migration {
     {
         Schema::create('playlists', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger(column: 'user_id');
             $table->string('name');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 
