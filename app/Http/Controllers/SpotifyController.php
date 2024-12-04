@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
 use App\Models\Playlist;
 use App\Models\Song;
+use Illuminate\Support\Facades\Auth;
 
 class SpotifyController extends Controller
 {
@@ -103,6 +104,7 @@ class SpotifyController extends Controller
 
         // Create playlist
         $playlist = Playlist::create([
+            'user_id' => Auth::user()->id,
             'name' => $request->name,
         ]);
 
@@ -124,12 +126,18 @@ class SpotifyController extends Controller
         return redirect()->route('playlists.index')->with('success', 'Playlist created successfully!');
     }
 
+    // public function indexPlaylists()
+    // {
+    //     $playlists = Playlist::with('songs')->where('id', Auth::user()->id)->get();
+    //     return Inertia::render('Playlists', ['playlists' => $playlists]);
+    // }
     public function indexPlaylists()
     {
-        $playlists = Playlist::with('songs')->get();
-        return Inertia::render('Playlists', ['playlists' => $playlists]);
+        $playlists = Playlist::with('topSongs')->where('id', Auth::user()->id)->get();
+        $fullPlaylists = Playlist::with('songs')->where('id', Auth::user()->id)->get();
+        // dd($playlists);
+        return Inertia::render('Playlists', ['playlists' => $playlists, 'fullPlaylists' => $fullPlaylists]);
     }
-
     public function destroyPlaylist($id)
     {
         $playlist = Playlist::findOrFail($id);
