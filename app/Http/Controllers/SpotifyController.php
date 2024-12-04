@@ -12,6 +12,7 @@ class SpotifyController extends Controller
 {
     public function generatePlaylist(Request $request)
     {
+        //hyfyhg
         // Fetch inputs
         $emotion = $request->input('emotion');
         $genre = $request->input('genre');
