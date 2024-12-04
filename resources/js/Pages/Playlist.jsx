@@ -55,7 +55,7 @@ const Playlist = ({ playlist }) => {
                         >
                             <img
                                 src={
-                                    track.album.images[0]?.url ||
+                                    track.album.images?.url ||
                                     "/default-album-cover.jpg"
                                 }
                                 alt="Album cover"
@@ -66,8 +66,7 @@ const Playlist = ({ playlist }) => {
                                     {track.name}
                                 </h3>
                                 <p className="text-gray-400">
-                                    Artist:{" "}
-                                    {track.artists[0]?.name || "Unknown"}
+                                    Artist: {track.artists?.name || "Unknown"}
                                 </p>
 
                                 {track.preview_url ? (

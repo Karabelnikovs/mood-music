@@ -9,6 +9,7 @@ use SpotifyWebAPI\SpotifyWebAPI;
 use SpotifyWebAPI\Session;
 use App\Models\Playlist;
 use App\Models\Song;
+use Illuminate\Support\Facades\Http;
 
 class SpotifyController extends Controller
 {
@@ -24,6 +25,7 @@ class SpotifyController extends Controller
         );
 
         $this->spotifyApi = new SpotifyWebAPI();
+        // dd($this->spotifyApi);
     }
 
     public function getSpotifyAccessToken()
@@ -35,44 +37,99 @@ class SpotifyController extends Controller
         return $this->session->getAccessToken();
     }
 
+    // public function generatePlaylist(Request $request)
+    // {
+    //     $this->spotifyApi->setAccessToken($this->getSpotifyAccessToken());
+
+    //     $emotion = $request->input('emotion');
+    //     $genre = $request->input('genre');
+
+    //     $genreMapping = [
+    //         'pop' => 'pop',
+    //         'jazz' => 'jazz',
+    //         'rock' => 'rock',
+    //         'classical' => 'classical',
+    //         'rap' => 'hip-hop',
+    //     ];
+
+    //     // Check if the genre exists in our mapping; otherwise, default to "pop"
+    //     $spotifyGenre = $genreMapping[$genre] ?? 'pop';
+
+    //     // Map emotions to Spotify audio features
+    //     $audioFeatures = $this->mapEmotionToFeatures($emotion);
+
+    //     // Generate recommendations based on genre, mood, and audio features
+    //     $recommendations = $this->spotifyApi->getRecommendations([
+    //         'seed_genres' => [$spotifyGenre],
+    //         'target_energy' => $audioFeatures['energy'],
+    //         'target_valence' => $audioFeatures['valence'],
+    //         'target_danceability' => $audioFeatures['danceability'],
+    //         'limit' => 10,
+    //     ]);
+
+    //     $tracks = $recommendations->tracks;
+
+    //     // Shuffle the playlist to ensure randomness
+    //     shuffle($tracks);
+
+    //     // Store playlist in session
+    //     session(['playlist' => $tracks]);
+    //     return redirect()->route('playlist');
+    // }
+
+
     public function generatePlaylist(Request $request)
     {
-        $this->spotifyApi->setAccessToken($this->getSpotifyAccessToken());
-
         $emotion = $request->input('emotion');
         $genre = $request->input('genre');
 
-        $genreMapping = [
-            'pop' => 'pop',
-            'jazz' => 'jazz',
-            'rock' => 'rock',
-            'classical' => 'classical',
-            'rap' => 'hip-hop',
+        $clientId = 'ac1cecb910d3478e9347ef294d8d20a6';
+        $clientSecret = '0b9596e00c764e748ceb9e3752a83c70';
+
+        $tokenResponse = Http::asForm()->post('https://accounts.spotify.com/api/token', [
+            'grant_type' => 'client_credentials',
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+        ]);
+
+        $accessToken = $tokenResponse->json()['access_token'];
+
+        $emotionKeywords = [
+            'happy' => 'happy',
+            'relaxed' => 'relax',
+            'energetic' => 'energetic',
+            'sad' => 'sad',
         ];
 
-        // Check if the genre exists in our mapping; otherwise, default to "pop"
-        $spotifyGenre = $genreMapping[$genre] ?? 'pop';
+        $keyword = $emotionKeywords[$emotion] ?? $emotion;
 
-        // Map emotions to Spotify audio features
-        $audioFeatures = $this->mapEmotionToFeatures($emotion);
-
-        // Generate recommendations based on genre, mood, and audio features
-        $recommendations = $this->spotifyApi->getRecommendations([
-            'seed_genres' => [$spotifyGenre],
-            'target_energy' => $audioFeatures['energy'],
-            'target_valence' => $audioFeatures['valence'],
-            'target_danceability' => $audioFeatures['danceability'],
+        $searchResponse = Http::withToken($accessToken)->get('https://api.spotify.com/v1/search', [
+            'q' => "$keyword genre:$genre",
+            'type' => 'track',
             'limit' => 10,
         ]);
 
-        $tracks = $recommendations->tracks;
+        $tracks = $searchResponse->json()['tracks']['items'] ?? [];
 
-        // Shuffle the playlist to ensure randomness
-        shuffle($tracks);
+        $formattedTracks = collect($tracks)->map(function ($track) {
+            return [
+                'id' => $track['id'], // Track ID
+                'name' => $track['name'], // Track Name
+                'artist' => $track['artists'][0]['name'] ?? 'Unknown', // Artist Name
+                'url' => $track['external_urls']['spotify'] ?? '', // Spotify URL
+                'preview_url' => $track['preview_url'] ?? null, // Preview URL
+                'album' => [
+                    'name' => $track['album']['name'] ?? 'Unknown', // Album Name
+                    'images' => $track['album']['images'] ?? [], // Album Cover Images
+                ],
+            ];
+        })->toArray();
 
-        // Store playlist in session
-        session(['playlist' => $tracks]);
+        session(['playlist' => $formattedTracks]);
+        // dd($formattedTracks);
         return redirect()->route('playlist');
+
+        // return back()->with('success', 'Playlist generated successfully!');
     }
 
     private function mapEmotionToFeatures($emotion)
