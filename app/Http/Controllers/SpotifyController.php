@@ -10,6 +10,7 @@ use SpotifyWebAPI\Session;
 use App\Models\Playlist;
 use App\Models\Song;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 
 class SpotifyController extends Controller
 {
@@ -163,8 +164,9 @@ class SpotifyController extends Controller
         if (empty($trackIds)) {
             return back()->withErrors(['message' => 'No tracks selected.']);
         }
-
+        // dd(Auth::user()->id);
         $playlist = Playlist::create([
+            'user_id' => Auth::user()->id,
             'name' => $request->name,
         ]);
 
@@ -187,8 +189,8 @@ class SpotifyController extends Controller
 
     public function indexPlaylists()
     {
-        $playlists = Playlist::with('topSongs')->get();
-        $fullPlaylists = Playlist::with('songs')->get();
+        $playlists = Playlist::with('topSongs')->where('user_id', Auth::user()->id)->get();
+        $fullPlaylists = Playlist::with('songs')->where('user_id', Auth::user()->id)->get();
         // dd($playlists);
         return Inertia::render('Playlists', ['playlists' => $playlists, 'fullPlaylists' => $fullPlaylists]);
     }

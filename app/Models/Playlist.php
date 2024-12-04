@@ -14,7 +14,7 @@ class Playlist extends Model
      *
      * @var string[]
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['user_id', 'name'];
 
     /**
      * A playlist has many songs.
