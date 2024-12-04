@@ -62,15 +62,17 @@ class SpotifyController extends Controller
             return [
                 'id' => $track['id'],
                 'name' => $track['name'],
-                'artist' => $track['artists'][0]['name'] ?? 'Unknown Artist',
-                'url' => $track['external_urls']['spotify'] ?? '',
-                'preview_url' => $track['preview_url'] ?? null,
+                'artist' => $track['artists'][0]['name'], // Ensure this exists
+                'url' => $track['external_urls']['spotify'],
+                'preview_url' => $track['preview_url'],
+                'album_cover_url' => $track['album']['images'][0]['url'] ?? null, // Make it explicit
                 'album' => [
-                    'name' => $track['album']['name'] ?? 'Unknown Album',
-                    'images' => $track['album']['images'] ?? [['url' => '/path/to/default-image.jpg']], // Fallback for missing image
+                    'name' => $track['album']['name'] ?? 'Unknown', // Album Name
+                    'images' => $track['album']['images'] ?? [], // Album Cover Images
                 ],
             ];
         })->toArray();
+
 
         // Save playlist to session
         session(['playlist' => $formattedTracks]);
