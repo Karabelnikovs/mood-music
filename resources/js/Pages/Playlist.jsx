@@ -65,12 +65,11 @@ const Playlist = ({ playlist }) => {
                                     {track.name}
                                 </h3>
 
-                                {/* Display the artist's name */}
                                 <p className="text-gray-400">
                                     Artist: {track.artist || "Unknown"}
                                 </p>
 
-                                {/* Check if preview URL exists */}
+                                {/* Preview or Spotify link */}
                                 {track.preview_url ? (
                                     <audio
                                         src={track.preview_url}
@@ -78,9 +77,14 @@ const Playlist = ({ playlist }) => {
                                         className="mt-2 w-full"
                                     />
                                 ) : (
-                                    <div className="mt-2 text-sm text-gray-500 italic">
-                                        Preview not available
-                                    </div>
+                                    <a
+                                        href={track.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-2 text-sm text-teal-500 underline"
+                                    >
+                                        Listen on Spotify
+                                    </a>
                                 )}
 
                                 <div className="mt-4">
@@ -157,3 +161,4 @@ const Playlist = ({ playlist }) => {
 };
 
 export default Playlist;
+
