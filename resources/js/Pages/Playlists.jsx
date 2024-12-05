@@ -73,7 +73,7 @@ const Playlists = ({ playlists, fullPlaylists }) => {
             ))}
 
             {selectedPlaylist && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
                     <div className="bg-gray-800 text-white p-6 rounded-lg w-full max-w-3xl relative">
                         <button
                             onClick={closeModal}
@@ -114,9 +114,14 @@ const Playlists = ({ playlists, fullPlaylists }) => {
                                                     className="mt-2 w-full"
                                                 />
                                             ) : (
-                                                <div className="mt-2 text-sm text-gray-500 italic">
-                                                    Preview not available
-                                                </div>
+                                                <a
+                                                    href={track.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="z-50 mt-2 text-sm text-teal-500 underline"
+                                                >
+                                                    Listen on Spotify
+                                                </a>
                                             )}
                                         </div>
                                     </li>
