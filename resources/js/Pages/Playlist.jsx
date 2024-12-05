@@ -40,7 +40,7 @@ const Playlist = ({ playlist }) => {
                 Back
             </a>
 
-            <h1 className="text-3xl font-bold mb-8 text-center">
+            <h1 className="text-3xl font-bold mb-8 text-center max-sm:mt-12">
                 Generated Playlist
             </h1>
 
@@ -114,7 +114,7 @@ const Playlist = ({ playlist }) => {
             {playlist.length > 0 && selectedTracks.length > 0 && (
                 <button
                     onClick={handleCreatePlaylist}
-                    className="mt-6 px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg"
+                    className="mt-6 max-sm:mb-6 px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg"
                 >
                     Create Playlist
                 </button>
