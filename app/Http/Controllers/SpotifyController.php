@@ -133,8 +133,8 @@ class SpotifyController extends Controller
     // }
     public function indexPlaylists()
     {
-        $playlists = Playlist::with('topSongs')->where('id', Auth::user()->id)->get();
-        $fullPlaylists = Playlist::with('songs')->where('id', Auth::user()->id)->get();
+        $playlists = Playlist::with('topSongs')->where('user_id', Auth::user()->id)->get();
+        $fullPlaylists = Playlist::with('songs')->where('user_id', Auth::user()->id)->get();
         // dd($playlists);
         return Inertia::render('Playlists', ['playlists' => $playlists, 'fullPlaylists' => $fullPlaylists]);
     }
